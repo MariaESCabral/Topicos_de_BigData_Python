@@ -1,0 +1,45 @@
+#EXERCICIO-BIG-DATA:MariaCabral
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+df = pd.read_csv('https://raw.githubusercontent.com/MariaESCabral/Topicos_de_BigData_Python/main/cursos-prouni.csv')
+
+
+# a. Efetuar a limpeza das colunas de notas: onde tiver NaN (Not a Number), substituir por 0,0.
+df['nota_integral_ampla'].fillna(0.0, inplace=True)
+df['nota_integral_cotas'].fillna(0.0, inplace=True)
+df.head(n=9)
+
+#b. Agrupe os dados pelo grau (Bacharelado, Licenciatura, etc).
+grupo_grau = df.groupby('grau')
+
+#c. Agrupe os dados pelos cursos de Matemática, Medicina e Pedagogia.
+curso_interessante = df[df['nome'].isin(['Matemática', 'Medicina', 'Pedagogia'])]
+grupo_por_cursos = curso_interessante.groupby('nome')
+
+#d. Agrupe os dados por Estado e obtenha a média de notas de corte por Estado.
+grupo_por_estado = df.groupby('cidade_busca')
+media_notas_corte_por_estado = grupo_por_estado['nota_integral_ampla'].mean()
+
+#e. Agrupe os dados pelos cursos Tecnológicos.
+tecnologicos = df[df['grau'] == 'Tecnológico']
+
+#f. Elimine a coluna “cidade_filtro” do dataframe.
+df.drop(columns=['cidade_filtro'])
+
+#g. Apresente a média das mensalidades dos cursos de Medicina.
+curso_medicina = df[df["nome"] == "Medicina"]
+mediaMensalidade = curso_medicina["mensalidade"].mean()
+
+#h. Média das notas de corte dos cursos de tempo integral.
+media_notas_tempo_integral = df[df['turno'] == 'Integral']['nota_integral_ampla'].mean()
+
+#i. Estatística Descritiva das Notas Integral Ampla dos cursos de Bacharelado.
+descricao_notas_bacharelado = df[df['grau'] == 'Bacharelado']['nota_integral_ampla'].describe()
+
+#j. Gráfico comparativo entre o grau dos cursos (Bacharelado, Licenciatura, Tecnologia, etc) pelas Notas Integral de Cotas.
+grupo_por_grau['nota_integral_cotas'].mean().plot(kind='bar')
+plt.xlabel('Grau do Curso')
+plt.ylabel('Média das Notas Integral de Cotas')
+plt.title('Comparação das Notas Integral de Cotas por Grau de Curso')
+plt.show()
